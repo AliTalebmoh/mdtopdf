@@ -1,6 +1,13 @@
+import type { PDFOptions } from "puppeteer";
+
 export interface Theme {
   label: string;
   css: string;
+  // Only needed for full-bleed (dark) backgrounds: md-to-pdf's default page
+  // margin is never painted by CSS at all, so a dark body can only ever fill
+  // the inset content box, leaving the actual page margins white. Themes that
+  // set this to a zero margin make up the lost edge gutter with CSS padding.
+  pdfOptions?: Partial<PDFOptions>;
 }
 
 // Applied before every theme's CSS: without it, Chromium's PDF pagination
@@ -67,9 +74,10 @@ export const THEMES = {
   },
   dark: {
     label: "Dark",
+    pdfOptions: { margin: { top: "0", right: "0", bottom: "0", left: "0" } },
     css: `
       html, body { background: #0a0a0a; color: #f0f0f0; }
-      body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; max-width: 700px; margin: 0 auto; line-height: 1.7; }
+      body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.7; padding: 20mm 25mm; }
       h1, h2, h3, h4, h5, h6 { color: #ffffff; border-color: #333 !important; }
       h5, h6 { font-size: 0.95em; text-transform: uppercase; letter-spacing: 0.08em; color: #a0a0a0; }
       strong, b { color: #ffffff; }
@@ -89,6 +97,7 @@ export const THEMES = {
   },
   sitewebk: {
     label: "SiteWebK",
+    pdfOptions: { margin: { top: "0", right: "0", bottom: "0", left: "0" } },
     css: `
       @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
@@ -111,8 +120,7 @@ export const THEMES = {
         font-size: 16px;
         line-height: 1.45;
         color: var(--sw-gray-300);
-        max-width: 880px;
-        margin: 0 auto;
+        padding: 24mm 28mm;
       }
 
       h1, h2, h3, h4, h5, h6 {
