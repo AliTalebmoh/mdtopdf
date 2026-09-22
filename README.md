@@ -30,7 +30,7 @@ Note: first `npm install` pulls down a bundled Chromium via Puppeteer (a couple 
 
 ## Themes
 
-Pick a look from the dropdown before converting: `default` (GitHub-style), `minimal`, `serif`, or `dark`. Defined as plain CSS in [src/themes.ts](src/themes.ts) — add a new key there and a matching `<option>` in [public/index.html](public/index.html) to add one.
+Pick a look from the dropdown before converting: `default` (GitHub-style), `minimal`, `serif`, `dark`, or `sitewebk` (monochrome, Space Grotesk + JetBrains Mono, hairline borders — pulled from the SiteWebK design system). Defined as plain CSS in [src/themes.ts](src/themes.ts) — add a new key there and a matching `<option>` in [public/index.html](public/index.html) to add one.
 
 ## License
 

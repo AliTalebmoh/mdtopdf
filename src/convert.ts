@@ -1,11 +1,11 @@
 import { mdToPdf } from "md-to-pdf";
-import { THEMES, type ThemeName } from "./themes.js";
+import { THEMES, PRINT_SAFETY_CSS, type ThemeName } from "./themes.js";
 
 export async function convertMarkdownToPdf(markdown: string, theme: ThemeName = "default"): Promise<Buffer> {
   const pdf = await mdToPdf(
     { content: markdown },
     {
-      css: THEMES[theme].css,
+      css: PRINT_SAFETY_CSS + THEMES[theme].css,
       ...(process.env.CI ? { launch_options: { args: ["--no-sandbox", "--disable-setuid-sandbox"] } } : {}),
     }
   );

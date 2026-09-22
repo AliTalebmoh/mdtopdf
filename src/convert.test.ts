@@ -18,5 +18,5 @@ test("converts markdown to a PDF buffer with a named theme", async () => {
 test("isThemeName rejects unknown themes", () => {
   assert.ok(isThemeName("default"));
   assert.ok(!isThemeName("nonexistent"));
-  assert.deepEqual(Object.keys(THEMES), ["default", "minimal", "serif", "dark"]);
+  assert.deepEqual(Object.keys(THEMES), ["default", "minimal", "serif", "dark", "sitewebk"]);
 });
