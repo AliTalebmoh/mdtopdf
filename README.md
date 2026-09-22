@@ -24,9 +24,13 @@ Then open http://localhost:3000, paste or upload a `.md` file, and click **Conve
 
 ## How it works
 
-`POST /convert` takes `{ markdown: string }`, renders it to a PDF with [md-to-pdf](https://github.com/simonhaenisc/md-to-pdf) (Puppeteer under the hood, so output gets real CSS and page breaks), and returns the PDF as a download.
+`POST /convert` takes `{ markdown: string, theme?: string }`, renders it to a PDF with [md-to-pdf](https://github.com/simonhaenisc/md-to-pdf) (Puppeteer under the hood, so output gets real CSS and page breaks), and returns the PDF as a download.
 
 Note: first `npm install` pulls down a bundled Chromium via Puppeteer (a couple hundred MB) — that's what renders the PDF.
+
+## Themes
+
+Pick a look from the dropdown before converting: `default` (GitHub-style), `minimal`, `serif`, or `dark`. Defined as plain CSS in [src/themes.ts](src/themes.ts) — add a new key there and a matching `<option>` in [public/index.html](public/index.html) to add one.
 
 ## License
 

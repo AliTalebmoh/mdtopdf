@@ -146,6 +146,19 @@
   }
   input[type="file"] { display: none; }
 
+  select#theme {
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--foreground);
+    border: 1px solid var(--border);
+  }
+  select#theme option { background: var(--card); color: var(--foreground); }
+
   #status {
     font-family: ui-monospace, monospace;
     font-size: 0.85rem;
@@ -181,6 +194,12 @@ This is **markdown**, converted to a *PDF*.
     <div class="row">
       <label class="file-btn" for="file">Choose File</label>
       <input type="file" id="file" accept=".md,text/markdown" />
+      <select id="theme">
+        <option value="default">Default</option>
+        <option value="minimal">Minimal</option>
+        <option value="serif">Serif</option>
+        <option value="dark">Dark</option>
+      </select>
       <button id="convert">Convert to PDF</button>
       <span id="status"></span>
     </div>
@@ -194,6 +213,7 @@ This is **markdown**, converted to a *PDF*.
   <script>
     const textarea = document.getElementById("markdown");
     const fileInput = document.getElementById("file");
+    const themeSelect = document.getElementById("theme");
     const convertBtn = document.getElementById("convert");
     const status = document.getElementById("status");
 
@@ -211,7 +231,7 @@ This is **markdown**, converted to a *PDF*.
         const res = await fetch("/convert", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ markdown }),
+          body: JSON.stringify({ markdown, theme: themeSelect.value }),
         });
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
