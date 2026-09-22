@@ -8,22 +8,40 @@ export interface Theme {
   // the inset content box, leaving the actual page margins white. Themes that
   // set this to a zero margin make up the lost edge gutter with CSS padding.
   pdfOptions?: Partial<PDFOptions>;
+  // highlight.js theme name for code blocks (md-to-pdf default: 'github',
+  // a light palette — wrong on a dark background, so dark themes override it).
+  highlightStyle?: string;
 }
 
-// Applied before every theme's CSS: without it, Chromium's PDF pagination
-// happily slices a code block or table mid-content across a page break.
+// Applied before every theme's CSS. Without break-inside: avoid, Chromium's
+// PDF pagination happily slices a paragraph, list item, code block, or table
+// mid-content across a page break — including leaving a single orphaned line
+// stranded alone on the next page. This moves the whole block to the next
+// page instead whenever it doesn't fit, at the cost of some trailing
+// whitespace on the page before it — the standard tradeoff every print/book
+// layout engine makes.
 export const PRINT_SAFETY_CSS = `
-  pre, table, blockquote, img { break-inside: avoid; page-break-inside: avoid; }
+  p, li, pre, table, blockquote, img { break-inside: avoid; page-break-inside: avoid; }
   h1, h2, h3, h4, h5, h6 { break-after: avoid; page-break-after: avoid; }
 `;
+
+// A page-number footer, styled to blend into each theme. Chromium shows a
+// default header (title/URL) once displayHeaderFooter is on, so every theme
+// also passes an empty headerTemplate to suppress it.
+function footerTemplate(color: string, background = "transparent"): string {
+  return `<div style="width:100%; font-size:9px; font-family:Helvetica,Arial,sans-serif; color:${color}; background:${background}; text-align:center; padding:4px 0; -webkit-print-color-adjust:exact;">Page <span class="pageNumber"></span> of <span class="totalPages"></span></div>`;
+}
+const NO_HEADER = "<div></div>";
 
 export const THEMES = {
   default: {
     label: "Default",
+    pdfOptions: { displayHeaderFooter: true, headerTemplate: NO_HEADER, footerTemplate: footerTemplate("#888") },
     css: "",
   },
   minimal: {
     label: "Minimal",
+    pdfOptions: { displayHeaderFooter: true, headerTemplate: NO_HEADER, footerTemplate: footerTemplate("#999") },
     css: `
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -53,6 +71,7 @@ export const THEMES = {
   },
   serif: {
     label: "Serif",
+    pdfOptions: { displayHeaderFooter: true, headerTemplate: NO_HEADER, footerTemplate: footerTemplate("#888") },
     css: `
       @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
@@ -80,7 +99,13 @@ export const THEMES = {
   },
   dark: {
     label: "Dark",
-    pdfOptions: { margin: { top: "0", right: "0", bottom: "0", left: "0" } },
+    highlightStyle: "github-dark",
+    pdfOptions: {
+      margin: { top: "0", right: "0", bottom: "14mm", left: "0" },
+      displayHeaderFooter: true,
+      headerTemplate: NO_HEADER,
+      footerTemplate: footerTemplate("#666", "#0a0a0a"),
+    },
     css: `
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap');
 
@@ -112,7 +137,13 @@ export const THEMES = {
   },
   sitewebk: {
     label: "SiteWebK",
-    pdfOptions: { margin: { top: "0", right: "0", bottom: "0", left: "0" } },
+    highlightStyle: "github-dark",
+    pdfOptions: {
+      margin: { top: "0", right: "0", bottom: "14mm", left: "0" },
+      displayHeaderFooter: true,
+      headerTemplate: NO_HEADER,
+      footerTemplate: footerTemplate("#5C5C5C", "#050505"),
+    },
     css: `
       @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 

@@ -8,12 +8,13 @@ export async function convertMarkdownToPdf(
 ): Promise<Buffer> {
   // Custom CSS fully replaces the preset's styling (but not the page-break
   // safety rules) — it's a clean slate, not a layer on top of a theme.
-  const { css, pdfOptions }: Theme = customCss ? { label: "Custom", css: customCss } : THEMES[theme];
+  const { css, pdfOptions, highlightStyle }: Theme = customCss ? { label: "Custom", css: customCss } : THEMES[theme];
   const pdf = await mdToPdf(
     { content: markdown },
     {
       css: PRINT_SAFETY_CSS + css,
       ...(pdfOptions ? { pdf_options: pdfOptions } : {}),
+      ...(highlightStyle ? { highlight_style: highlightStyle } : {}),
       ...(process.env.CI ? { launch_options: { args: ["--no-sandbox", "--disable-setuid-sandbox"] } } : {}),
     }
   );

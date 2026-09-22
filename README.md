@@ -34,6 +34,11 @@ Pick a look from the dropdown before converting: `default` (GitHub-style), `mini
 
 Need full control instead? Pick **Custom CSS…** in the dropdown and write your own — it fully replaces the preset (page-break safety rules still apply), capped at 50k characters. There's no full-bleed dark background support for custom CSS yet (that needs a zero PDF margin, which only the built-in dark themes set) — copy `dark` or `sitewebk`'s `pdfOptions` in [src/themes.ts](src/themes.ts) as a starting point if you need that.
 
+Every theme also gets, for free:
+- **Page numbers** — a small "Page X of Y" footer, styled to match each theme (transparent on light themes, a matching solid strip on dark ones).
+- **A matched syntax-highlight theme** — dark themes use highlight.js's `github-dark` palette instead of the light default, so code blocks don't look pasted in from a different document.
+- **No orphaned lines** — paragraphs, list items, code blocks, tables, and images never split across a page break; a block that doesn't fully fit moves to the next page as a whole instead of stranding a line or two.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
