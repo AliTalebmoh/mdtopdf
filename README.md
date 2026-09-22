@@ -1,5 +1,7 @@
 # mdtopdf
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Paste markdown, get a PDF. A tiny web app — no account, no upload to a third party, runs on your machine.
 
 Placeholder name — rename freely (just update `package.json`).
