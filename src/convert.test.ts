@@ -15,6 +15,12 @@ test("converts markdown to a PDF buffer with a named theme", async () => {
   assert.equal(pdf.subarray(0, 4).toString(), "%PDF");
 });
 
+test("custom CSS overrides the preset entirely", async () => {
+  const pdf = await convertMarkdownToPdf("# Hello", "default", "body { background: #010203; }");
+  assert.ok(Buffer.isBuffer(pdf));
+  assert.equal(pdf.subarray(0, 4).toString(), "%PDF");
+});
+
 test("isThemeName rejects unknown themes", () => {
   assert.ok(isThemeName("default"));
   assert.ok(!isThemeName("nonexistent"));

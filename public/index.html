@@ -114,6 +114,13 @@
   }
   textarea:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
 
+  #customCss {
+    height: 16vh;
+    margin-top: 0.75rem;
+    display: none;
+  }
+  #customCss.visible { display: block; }
+
   .row {
     display: flex;
     flex-wrap: wrap;
@@ -200,10 +207,13 @@ This is **markdown**, converted to a *PDF*.
         <option value="serif">Serif</option>
         <option value="dark">Dark</option>
         <option value="sitewebk">SiteWebK</option>
+        <option value="custom">Custom CSS&hellip;</option>
       </select>
       <button id="convert">Convert to PDF</button>
       <span id="status"></span>
     </div>
+
+    <textarea id="customCss" placeholder="body { font-family: Georgia, serif; }&#10;h1 { color: #ef4444; }"></textarea>
   </div>
 
   <footer>
@@ -215,6 +225,7 @@ This is **markdown**, converted to a *PDF*.
     const textarea = document.getElementById("markdown");
     const fileInput = document.getElementById("file");
     const themeSelect = document.getElementById("theme");
+    const customCssBox = document.getElementById("customCss");
     const convertBtn = document.getElementById("convert");
     const status = document.getElementById("status");
 
@@ -223,16 +234,29 @@ This is **markdown**, converted to a *PDF*.
       if (file) textarea.value = await file.text();
     });
 
+    themeSelect.addEventListener("change", () => {
+      customCssBox.classList.toggle("visible", themeSelect.value === "custom");
+    });
+
     convertBtn.addEventListener("click", async () => {
       status.textContent = "";
       const markdown = textarea.value;
+      const isCustom = themeSelect.value === "custom";
+      if (isCustom && !customCssBox.value.trim()) {
+        status.textContent = "custom CSS is empty";
+        return;
+      }
       convertBtn.disabled = true;
       convertBtn.textContent = "Converting...";
       try {
         const res = await fetch("/convert", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ markdown, theme: themeSelect.value }),
+          body: JSON.stringify({
+            markdown,
+            theme: themeSelect.value,
+            ...(isCustom ? { customCss: customCssBox.value } : {}),
+          }),
         });
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
