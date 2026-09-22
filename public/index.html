@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>mdtopdf</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: system-ui, sans-serif;
+    max-width: 720px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+  }
+  h1 { font-size: 1.4rem; }
+  textarea {
+    width: 100%;
+    height: 50vh;
+    box-sizing: border-box;
+    font-family: ui-monospace, monospace;
+    font-size: 0.9rem;
+    padding: 0.75rem;
+  }
+  .row { display: flex; gap: 0.75rem; align-items: center; margin-top: 0.75rem; }
+  button {
+    padding: 0.5rem 1.25rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  #status { font-size: 0.9rem; color: #b00; }
+</style>
+</head>
+<body>
+  <h1>mdtopdf</h1>
+  <p>Paste markdown, or upload a .md file, then convert it to a PDF.</p>
+
+  <textarea id="markdown" placeholder="# Title&#10;&#10;Write or paste markdown here...">
+# Hello, world
+
+This is **markdown**, converted to a *PDF*.
+  </textarea>
+
+  <div class="row">
+    <input type="file" id="file" accept=".md,text/markdown" />
+    <button id="convert">Convert to PDF</button>
+    <span id="status"></span>
+  </div>
+
+  <script>
+    const textarea = document.getElementById("markdown");
+    const fileInput = document.getElementById("file");
+    const convertBtn = document.getElementById("convert");
+    const status = document.getElementById("status");
+
+    fileInput.addEventListener("change", async () => {
+      const file = fileInput.files[0];
+      if (file) textarea.value = await file.text();
+    });
+
+    convertBtn.addEventListener("click", async () => {
+      status.textContent = "";
+      const markdown = textarea.value;
+      convertBtn.disabled = true;
+      convertBtn.textContent = "Converting...";
+      try {
+        const res = await fetch("/convert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ markdown }),
+        });
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.error || `Request failed (${res.status})`);
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "document.pdf";
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        status.textContent = err.message;
+      } finally {
+        convertBtn.disabled = false;
+        convertBtn.textContent = "Convert to PDF";
+      }
+    });
+  </script>
+</body>
+</html>

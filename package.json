@@ -1,0 +1,26 @@
+{
+  "name": "mdtopdf",
+  "version": "0.1.0",
+  "description": "Paste markdown, get a PDF.",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "tsx --test src/convert.test.ts"
+  },
+  "keywords": ["markdown", "pdf"],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.2.1",
+    "md-to-pdf": "^5.2.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
